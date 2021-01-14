@@ -3,7 +3,13 @@
 # ~~~~
 
 # Home page
-GET         /                                controllers.ApplicationController.index
+GET         /oldIndex                                controllers.ApplicationController.index
+GET          /                           controllers.HomeController.index
+GET          /rules                      controllers.HomeController.rules
+GET          /games                      controllers.LobbyController.index
+GET          /games/websocket            controllers.LobbyController.socket
+GET           /games/new                  controllers.LobbyController.newGame
+GET          /games/:id                  controllers.LobbyController.getGame(id: Int)
 GET         /signOut                         controllers.ApplicationController.signOut
 GET         /authenticate/:provider          controllers.SocialAuthController.authenticate(provider)
 
@@ -31,6 +37,11 @@ POST        /password/change                 controllers.ChangePasswordControlle
 
 GET         /account/email/:email            controllers.ActivateAccountController.send(email: String)
 GET         /account/activate/:token         controllers.ActivateAccountController.activate(token: java.util.UUID)
+
+GET     /games/:id/json             controllers.LobbyController.getJson(id: Int)
+GET     /games/:id/websocket        controllers.LobbyController.openSocket(id: Int)
+GET /board                          controllers.BoardController.index
+POST /games/:id/init                controllers.LobbyController.initGame(id: Int)
 
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                    controllers.Assets.versioned(file)

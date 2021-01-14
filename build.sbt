@@ -43,17 +43,17 @@ routesImport += "utils.route.Binders._"
 TwirlKeys.templateImports := Seq()
 
 scalacOptions ++= Seq(
-  "-deprecation", // Emit warning and location for usages of deprecated APIs.
+  /*"-deprecation", // Emit warning and location for usages of deprecated APIs.
   "-feature", // Emit warning and location for usages of features that should be imported explicitly.
   "-unchecked", // Enable additional warnings where generated code depends on assumptions.
-  "-Xfatal-warnings", // Fail the compilation if there are any warnings.
+  //"-Xfatal-warnings", // Fail the compilation if there are any warnings.
   //"-Xlint", // Enable recommended additional warnings.
   "-Ywarn-dead-code", // Warn when dead code is identified.
   "-Ywarn-numeric-widen", // Warn when numerics are widened.
   // Play has a lot of issues with unused imports and unsued params
   // https://github.com/playframework/playframework/issues/6690
   // https://github.com/playframework/twirl/issues/105
-  "-Xlint:-unused,_"
+  //"-Xlint:-unused,_"*/
 )
 
 //********************************************************

@@ -1,0 +1,37 @@
+@import de.htwg.se.connect4.controller.controllerComponent.ControllerInterface
+@import de.htwg.se.connect4.aview.Tui
+@import controllers.GameController
+@(games:Map[Int, GameController])
+
+@main("Welcome to Play") {
+    <h1>Lobby</h1>
+    <div class="container">
+    @if(games.isEmpty){
+    <p>There are currently no open Games, be the first to start playing!</p><br>
+        <a href="/games/new">Start new Game</a>
+    } else {
+        <p>
+            These are the currently active games, join one if you want!<br>
+            You can also create a <a href="/games/new">new</a> one.
+        </p>
+        <ul>
+            <div class="container">
+                <div class="row justify-content-left">
+            @for((key,game) <- games) {
+                <div class="col-12 col-sm-12 col-md-6 col-lg-3">
+                <div class="card" style="width: 18rem;">
+                    <img src="..." class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Game #@key</h5>
+                        <p class="card-text">@for(player <- games(key).controller.getPlayers) {<p>@player.playerName </p>} </p>
+                        <a href="/games/@key" class="btn btn-primary">Join game</a>
+                    </div>
+                </div>
+                </div>
+            }
+                </div>
+        </div>
+        </ul>
+    }
+    </div>
+}

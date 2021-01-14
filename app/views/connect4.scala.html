@@ -1,0 +1,54 @@
+@import de.htwg.se.connect4.model.boardComponent.boardBaseImpl.Color
+@import controllers.routes
+@(controller:de.htwg.se.connect4.controller.controllerComponent.ControllerInterface, id:Int)
+
+@getPlayersColor(row:Int, col:Int) = @{controller.getPlayers(controller.getCurrentPlayerIndex).color.toString}
+@getSizeOfRows() = @{controller.sizeOfCols}
+
+@getPreviewCellIndex(col:Int)= @{
+    var idx = controller.sizeOfRows-1
+    var found = false
+    while(!found && idx >= 0){
+    found = !controller.cell(idx,col).isSet
+    idx -= 1
+    }
+    if(found) {
+      idx+1
+    }
+}
+
+@main("Welcome to Play") {
+
+    <h1>Connect 4</h1>
+    <div class="container">
+        @if(controller.getPlayers.size != 2){
+            <p>Please enter your name.</p>
+            <form action="/games/@id/init" method="post">
+                <label for="inputfield">Ihre Eingabe:</label>
+                <input type="text" id="inputField" name="inputField"></input>
+                <input type="submit" value="Submit">
+            </form>
+        } else {
+
+            <buttongroup></buttongroup>
+
+    <board></board>
+
+       <!-- <div> @{if(controller.getState.toString().equals("InGameState")) {controller.getPlayerDemandString} else {controller.stateString}}</div>
+        <form action="/games/@id" method="post">
+            <label for="inputfield">Ihre Eingabe:</label>
+            <input type="text" id="inputField" name="inputField"></input>
+            <input type="submit" value="Submit">
+        </form>
+            <hr> -->
+            Zurück zur <a href="/games">Lobby</a>
+    </div>
+    <script> ID = @id</script>
+    <script src="@routes.Assets.versioned("javascripts/game.js")" type="text/javascript"></script>
+    <script src="@routes.Assets.versioned("javascripts/vue.js")" ></script>
+    <script src='@routes.Assets.versioned("javascripts/connect4Vue.js")'></script>
+
+
+
+}
+}
