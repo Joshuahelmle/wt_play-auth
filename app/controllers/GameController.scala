@@ -12,11 +12,27 @@ import javax.inject.Singleton
 import play.api.libs.json._
 import play.api.libs.streams.ActorFlow
 import play.api.mvc._
+import utils.auth.DefaultEnv
+
+import scala.concurrent.Future
+import org.webjars.play.WebJarsUtil
+import play.api.i18n.I18nSupport
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 
 
 
 @Singleton
-class GameController (cc: ControllerComponents) (implicit system : ActorSystem, mat: Materializer) extends AbstractController(cc) {
+class GameController
+(cc: ControllerComponents,
+ silhouette: Silhouette[DefaultEnv])
+(implicit
+ system : ActorSystem,
+ mat: Materializer,
+ webJarsUtil: WebJarsUtil,
+ assets: AssetsFinder
+) extends AbstractController(cc) with I18nSupport {
+
   val injector = Guice.createInjector(new Connect4Module)
   val controller = injector.getInstance(classOf[ControllerInterface])
   object Connect4WebSocketActorFactory {
@@ -69,9 +85,9 @@ class GameController (cc: ControllerComponents) (implicit system : ActorSystem, 
     Redirect(s"/games")
   }
 
-  def getJson()  = Action { implicit request : Request[AnyContent] =>
+  def getJson()  = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val json = controllerToJson()
-    Ok(json)
+    Future.successful(Ok(json))
   }
 
   def controllerToJson() = {
