@@ -8,23 +8,24 @@ import play.api.libs.json
 import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{ AnyContent, BaseController, ControllerComponents, Request, WebSocket }
-import scala.concurrent.Future
+
+import scala.concurrent.{ ExecutionContext, Future }
 import utils.auth.DefaultEnv
 import play.api.mvc.{ AnyContent, ControllerComponents, WebSocket, _ }
 import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
-import com.mohiva.play.silhouette.api.Silhouette
-import com.mohiva.play.silhouette.api.actions.SecuredRequest
+import com.mohiva.play.silhouette.api.{ HandlerResult, Silhouette }
+import com.mohiva.play.silhouette.api.actions.{ SecuredErrorHandler, SecuredRequest }
 
 @Singleton
-class LobbyController @Inject()
-(controllerComponents: ControllerComponents,
- silhouette: Silhouette[DefaultEnv])
-(implicit
- system: ActorSystem,
- mat: Materializer,
- webJarsUtil: WebJarsUtil,
- assets: AssetsFinder) extends AbstractController(controllerComponents) with I18nSupport {
+class LobbyController @Inject() (
+  controllerComponents: ControllerComponents,
+  silhouette: Silhouette[DefaultEnv])(implicit
+  system: ActorSystem,
+  mat: Materializer,
+  webJarsUtil: WebJarsUtil,
+  assets: AssetsFinder,
+  ec: ExecutionContext) extends AbstractController(controllerComponents) with I18nSupport {
   var games: Map[Int, GameController] = Map.empty[Int, GameController]
   var gameIdx = 0
   object Connect4LobbyWebSocketActorFactory {
@@ -118,9 +119,19 @@ class LobbyController @Inject()
 
   }
 
-  def socket = WebSocket.accept[JsValue, JsValue] { request =>
+  /*def socket = WebSocket.accept[JsValue, JsValue] { request =>
     ActorFlow.actorRef {
       out => Connect4LobbyWebSocketActorFactory.create(out)
+    }
+  }*/
+
+  def socket = WebSocket.acceptOrResult[JsValue, JsValue] { request =>
+    implicit val req = Request(request, AnyContentAsEmpty)
+    silhouette.SecuredRequestHandler { securedRequest =>
+      Future.successful(HandlerResult(Ok, Some(securedRequest.identity)))
+    }.map {
+      case HandlerResult(r, Some(user)) => Right(ActorFlow.actorRef(out => Connect4LobbyWebSocketActorFactory.create(out)))
+      case HandlerResult(r, None) => { println(r); Left(r) }
     }
   }
 
