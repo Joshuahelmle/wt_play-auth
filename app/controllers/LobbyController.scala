@@ -34,7 +34,7 @@ class LobbyController @Inject()
   }
 
   def newGame() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
-    val game = new GameController(controllerComponents)
+    val game = new GameController(controllerComponents, silhouette)
 
     games += (gameIdx -> game)
     print(games)
@@ -54,9 +54,12 @@ class LobbyController @Inject()
 
   def initGame(idx: Int) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val body: AnyContent = request.body
-    val input = body.asFormUrlEncoded.get("inputField").map(_.toString)
+    val input1 = body.asFormUrlEncoded.get("inputField1").map(_.toString)
+    val input2 = body.asFormUrlEncoded.get("inputField2").map(_.toString)
     val game = games(idx)
-    game.controller.addPlayer(input.head)
+    game.controller.addPlayer(input1.head)
+    game.controller.addPlayer(input2.head)
+
     Future.successful(Redirect(s"/games/$idx"))
   }
 
@@ -89,7 +92,7 @@ class LobbyController @Inject()
   }
 
   def createNewGame(player1: String, player2: String): Unit = {
-    val game = new GameController(controllerComponents)
+    val game = new GameController(controllerComponents, silhouette)
 
     games += (gameIdx -> game)
     print(games)
