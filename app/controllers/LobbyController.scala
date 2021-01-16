@@ -8,10 +8,23 @@ import play.api.libs.json
 import play.api.libs.json.{ JsValue, Json }
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{ AnyContent, BaseController, ControllerComponents, Request, WebSocket }
+import scala.concurrent.Future
+import utils.auth.DefaultEnv
+import play.api.mvc.{ AnyContent, ControllerComponents, WebSocket, _ }
+import org.webjars.play.WebJarsUtil
+import play.api.i18n.I18nSupport
+import com.mohiva.play.silhouette.api.Silhouette
+import com.mohiva.play.silhouette.api.actions.SecuredRequest
 
 @Singleton
-class LobbyController @Inject() (val controllerComponents: ControllerComponents)(implicit system: ActorSystem, mat: Materializer) extends BaseController {
-
+class LobbyController @Inject()
+(controllerComponents: ControllerComponents,
+ silhouette: Silhouette[DefaultEnv])
+(implicit
+ system: ActorSystem,
+ mat: Materializer,
+ webJarsUtil: WebJarsUtil,
+ assets: AssetsFinder) extends AbstractController(controllerComponents) with I18nSupport {
   var games: Map[Int, GameController] = Map.empty[Int, GameController]
   var gameIdx = 0
   object Connect4LobbyWebSocketActorFactory {
@@ -20,36 +33,36 @@ class LobbyController @Inject() (val controllerComponents: ControllerComponents)
     }
   }
 
-  def newGame() = Action { implicit request: Request[AnyContent] =>
+  def newGame() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val game = new GameController(controllerComponents)
 
     games += (gameIdx -> game)
     print(games)
     val oldIdx = gameIdx
     gameIdx += 1
-    Redirect(s"/games/$oldIdx")
+    Future.successful(Redirect(s"/games/$oldIdx"))
   }
 
-  def index() = Action { implicit request: Request[AnyContent] =>
-    Ok(views.html.games(games))
+  def index() = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
+    Future.successful(Ok(views.html.games(games)))
   }
 
-  def getGame(idx: Int) = Action { implicit request: Request[AnyContent] =>
+  def getGame(idx: Int) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val game = games(idx)
-    Ok(views.html.connect4.render(game.controller, idx))
+    Future.successful(Ok(views.html.connect4.render(game.controller, idx)))
   }
 
-  def initGame(idx: Int) = Action { implicit request: Request[AnyContent] =>
+  def initGame(idx: Int) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val body: AnyContent = request.body
     val input = body.asFormUrlEncoded.get("inputField").map(_.toString)
     val game = games(idx)
     game.controller.addPlayer(input.head)
-    Redirect(s"/games/$idx")
+    Future.successful(Redirect(s"/games/$idx"))
   }
 
-  def getJson(idx: Int) = Action { implicit request: Request[AnyContent] =>
+  def getJson(idx: Int) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val game = games(idx)
-    Ok(game.controllerToJson())
+    Future.successful(Ok(game.controllerToJson()))
   }
 
   def openSocket(idx: Int) = {
