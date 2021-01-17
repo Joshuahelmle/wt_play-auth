@@ -63,10 +63,15 @@ class LobbyController @Inject() (
 
     Future.successful(Redirect(s"/games/$idx"))
   }
-
+  /*
   def getJson(idx: Int) = silhouette.SecuredAction.async { implicit request: SecuredRequest[DefaultEnv, AnyContent] =>
     val game = games(idx)
     Future.successful(Ok(game.controllerToJson()))
+  }*/
+
+  def getJson(idx: Int) = Action { implicit request: Request[AnyContent] =>
+    val game = games(idx)
+    Ok(game.controllerToJson())
   }
 
   def openSocket(idx: Int) = {
@@ -132,6 +137,24 @@ class LobbyController @Inject() (
     }.map {
       case HandlerResult(r, Some(user)) => Right(ActorFlow.actorRef(out => Connect4LobbyWebSocketActorFactory.create(out)))
       case HandlerResult(r, None) => { println(r); Left(r) }
+    }
+  }
+
+  def userAwareRequestHandler = Action.async { implicit request =>
+    silhouette.UserAwareRequestHandler { userAwareRequest =>
+      Future.successful(HandlerResult(Ok, userAwareRequest.identity))
+    }.map {
+      case HandlerResult(r, Some(user)) => Ok(Json.toJson(user.loginInfo))
+      case HandlerResult(r, None) => Unauthorized
+    }
+  }
+
+  val errorHandler = new SecuredErrorHandler {
+    override def onNotAuthenticated(implicit request: RequestHeader) = {
+      Future.successful(Unauthorized("local.not.authenticated"))
+    }
+    override def onNotAuthorized(implicit request: RequestHeader) = {
+      Future.successful(Forbidden("local.not.authorized"))
     }
   }
 

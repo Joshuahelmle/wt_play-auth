@@ -165,7 +165,7 @@ class GameController
     }
 
      override def update()  = {
-     // sendMsg("done");
+      sendMsg("done");
     }
   }
 
