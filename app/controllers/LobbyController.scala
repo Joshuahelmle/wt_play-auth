@@ -5,7 +5,7 @@ import akka.stream.Materializer
 import de.htwg.se.connect4.util.Observer
 import javax.inject.{ Inject, Singleton }
 import play.api.libs.json
-import play.api.libs.json.{ JsValue, Json }
+import play.api.libs.json.{ JsObject, JsValue, Json }
 import play.api.libs.streams.ActorFlow
 import play.api.mvc.{ AnyContent, BaseController, ControllerComponents, Request, WebSocket }
 

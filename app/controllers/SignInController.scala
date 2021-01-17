@@ -40,6 +40,7 @@ class SignInController @Inject() (
     SignInForm.form.bindFromRequest.fold(
       form => Future.successful(BadRequest(signIn(form, socialProviderRegistry))),
       data => {
+        println(data.email, data.password)
         val credentials = Credentials(data.email, data.password)
         credentialsProvider.authenticate(credentials).flatMap { loginInfo =>
           userService.retrieve(loginInfo).flatMap {
