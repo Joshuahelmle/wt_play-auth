@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/frontend/precache-manifest.18768aaf09a87238a8bec29e5a9defa1.js"
+  "/frontend/precache-manifest.94f18dd79ffdf5f44033ec86fb0b0cc7.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "connect4-pwa"});
