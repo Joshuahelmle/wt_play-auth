@@ -10,7 +10,7 @@
 
 @implicitFieldConstructor = @{ b4.vertical.fieldConstructor() }
 
-@main(messages("sign.up.title")) {
+@main_old(messages("sign.up.title")) {
     <fieldset class="col-md-6 col-md-offset-3">
         <legend>@messages("sign.up.account")</legend>
         @helper.form(action = controllers.routes.SignUpController.submit()) {
