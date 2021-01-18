@@ -43,6 +43,9 @@ GET     /games/:id/websocket        controllers.LobbyController.openSocket(id: I
 GET /board                          controllers.BoardController.index
 POST /games/:id/init                controllers.LobbyController.initGame(id: Int)
 
+GET /frontend                       controllers.Connect4FrontendController.serveFrontend()
+GET     /frontend/*file                      controllers.Assets.at(path="/public/frontend", file)
+
 # Map static resources from the /public folder to the /assets URL path
 GET         /assets/*file                    controllers.Assets.versioned(file)
 ->          /webjars                         webjars.Routes

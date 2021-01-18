@@ -1,5 +1,7 @@
 package controllers
 
+import java.nio.file.NoSuchFileException
+
 import akka.actor.{ Actor, ActorRef, ActorSystem, Props }
 import akka.stream.Materializer
 import de.htwg.se.connect4.util.Observer
@@ -16,6 +18,8 @@ import org.webjars.play.WebJarsUtil
 import play.api.i18n.I18nSupport
 import com.mohiva.play.silhouette.api.{ HandlerResult, Silhouette }
 import com.mohiva.play.silhouette.api.actions.{ SecuredErrorHandler, SecuredRequest }
+
+import java.io.File
 
 @Singleton
 class LobbyController @Inject() (
@@ -175,5 +179,14 @@ class LobbyController @Inject() (
     }
 
   }
+}
 
+class Connect4FrontendController @Inject() (scc: SilhouetteControllerComponents)(implicit ex: ExecutionContext) extends SilhouetteController(scc) {
+  def serveFrontend() = Action { implicit request: Request[AnyContent] =>
+    try {
+      Ok.sendFile(new File("/app/public/frontend/index.html"), inline = true)
+    } catch {
+      case e: NoSuchFileException => Ok.sendFile(new File("./public/frontend/index.html"), inline = true)
+    }
+  }
 }
