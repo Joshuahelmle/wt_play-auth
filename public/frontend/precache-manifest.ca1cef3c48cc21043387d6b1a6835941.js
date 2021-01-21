@@ -1,18 +1,18 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "6d71baa8bb81e7ab05e2",
+    "revision": "25e97124165808cd94f5",
     "url": "/frontend/css/about.8cc7ecdc.css"
   },
   {
-    "revision": "780ebb3e006f027e11f5",
-    "url": "/frontend/css/app.cd2af8de.css"
+    "revision": "ddb09aa629ac92bf4968",
+    "url": "/frontend/css/app.8c0ac820.css"
   },
   {
     "revision": "17f76bbedff51c9e4375",
     "url": "/frontend/css/chunk-63b7b5e8.18eb4cf8.css"
   },
   {
-    "revision": "93ef13bf5ef9495ae888",
+    "revision": "9ee09a1224388106df8a",
     "url": "/frontend/css/chunk-69af26dd.66d06d60.css"
   },
   {
@@ -40,24 +40,24 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/frontend/img/wood_background.dde57b26.jpeg"
   },
   {
-    "revision": "025de207b543103ae23e5da963b3d7e8",
+    "revision": "3fcd65f9e2c195cf2cf20d5a6c7d0e39",
     "url": "/frontend/index.html"
   },
   {
-    "revision": "6d71baa8bb81e7ab05e2",
-    "url": "/frontend/js/about.2e925eca.js"
+    "revision": "25e97124165808cd94f5",
+    "url": "/frontend/js/about.c2171ea9.js"
   },
   {
-    "revision": "780ebb3e006f027e11f5",
-    "url": "/frontend/js/app.28b20e79.js"
+    "revision": "ddb09aa629ac92bf4968",
+    "url": "/frontend/js/app.eb53d623.js"
   },
   {
     "revision": "17f76bbedff51c9e4375",
     "url": "/frontend/js/chunk-63b7b5e8.3613c32d.js"
   },
   {
-    "revision": "93ef13bf5ef9495ae888",
-    "url": "/frontend/js/chunk-69af26dd.e4275368.js"
+    "revision": "9ee09a1224388106df8a",
+    "url": "/frontend/js/chunk-69af26dd.aa4912f9.js"
   },
   {
     "revision": "85b523c482fbc69c5926",
